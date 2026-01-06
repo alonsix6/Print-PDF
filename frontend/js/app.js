@@ -1,6 +1,7 @@
 /**
  * PDF OCR Enhancement Tool - Frontend Application
  * Modern, interactive PDF processing interface
+ * Version: 1.0.1
  */
 
 // ========================================
