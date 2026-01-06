@@ -7,10 +7,10 @@
 // Configuration
 // ========================================
 const CONFIG = {
-    // API URL - Change this to your Railway backend URL
+    // API URL - Railway backend
     API_URL: window.location.hostname === 'localhost'
         ? 'http://localhost:8000'
-        : 'https://your-backend.railway.app', // TODO: Update with your Railway URL
+        : 'https://print-pdf-production.up.railway.app',
 
     // Polling interval for status checks (ms)
     POLL_INTERVAL: 1000,
