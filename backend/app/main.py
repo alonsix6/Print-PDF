@@ -2,6 +2,7 @@
 PDF OCR Enhancement Tool - Main Application
 A powerful tool to enhance scanned PDFs with OCR
 """
+import os
 import time
 import shutil
 import subprocess
@@ -12,8 +13,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.responses import JSONResponse
 from loguru import logger
 
 from .config import settings
@@ -21,13 +21,17 @@ from .routers import pdf_router
 from .models import HealthCheck
 
 
-# Configure logging
+# Configure logging - create logs dir first
+logs_dir = Path("logs")
+logs_dir.mkdir(parents=True, exist_ok=True)
+
 logger.add(
-    "logs/app.log",
+    logs_dir / "app.log",
     rotation="10 MB",
     retention="7 days",
     level="INFO",
-    format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}"
+    format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}",
+    catch=True  # Don't crash on logging errors
 )
 
 
