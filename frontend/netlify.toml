@@ -1,0 +1,43 @@
+# Netlify Configuration for PDF OCR Enhancement Tool
+
+[build]
+  # No build command needed for static site
+  publish = "."
+
+# Redirect API calls to Railway backend
+# Uncomment and update the 'to' URL with your Railway backend URL
+# [[redirects]]
+#   from = "/api/*"
+#   to = "https://your-backend.railway.app/api/:splat"
+#   status = 200
+#   force = true
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# SPA fallback - redirect all requests to index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
