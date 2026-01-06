@@ -33,6 +33,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     poppler-utils \
     # Ghostscript for PDF optimization
     ghostscript \
+    # Unpaper for OCRmyPDF --clean option
+    unpaper \
     # Required for python-magic
     libmagic1 \
     # OpenCV dependencies
