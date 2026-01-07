@@ -1,5 +1,5 @@
 # PDF OCR Enhancement Tool - Docker Image
-# Optimized for Railway deployment
+# Optimized for Railway deployment with ALL OCRmyPDF dependencies
 
 FROM python:3.11-slim-bookworm
 
@@ -8,13 +8,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONIOENCODING=utf-8 \
     DEBIAN_FRONTEND=noninteractive \
-    # Tesseract data path
     TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies including ALL OCRmyPDF optional deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
     # Tesseract OCR and language packs
     tesseract-ocr \
@@ -33,8 +32,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     poppler-utils \
     # Ghostscript for PDF optimization
     ghostscript \
-    # Unpaper for OCRmyPDF --clean option
+    # OCRmyPDF optional dependencies
     unpaper \
+    pngquant \
+    # Build tools for jbig2enc
+    git \
+    build-essential \
+    autotools-dev \
+    automake \
+    libtool \
+    libleptonica-dev \
+    pkg-config \
+    zlib1g-dev \
     # Required for python-magic
     libmagic1 \
     # OpenCV dependencies
@@ -43,7 +52,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libsm6 \
     libxext6 \
     libxrender-dev \
-    # Clean up
+    && rm -rf /var/lib/apt/lists/*
+
+# Build and install jbig2enc from source (for better PDF compression)
+RUN git clone https://github.com/agl/jbig2enc.git /tmp/jbig2enc \
+    && cd /tmp/jbig2enc \
+    && ./autogen.sh \
+    && ./configure \
+    && make \
+    && make install \
+    && ldconfig \
+    && rm -rf /tmp/jbig2enc
+
+# Clean up build dependencies to reduce image size
+RUN apt-get purge -y --auto-remove \
+    git \
+    build-essential \
+    autotools-dev \
+    automake \
+    libtool \
+    pkg-config \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -71,6 +99,5 @@ USER appuser
 # Expose port (Railway will override with $PORT)
 EXPOSE 8000
 
-# No health check in Dockerfile - Railway handles it
 # Run the application with shell to expand $PORT
 CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
