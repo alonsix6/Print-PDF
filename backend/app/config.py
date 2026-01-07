@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     TEMP_DIR: Path = BASE_DIR / "temp"
 
     # File Limits
-    MAX_FILE_SIZE_MB: int = 100  # Maximum file size in MB
+    MAX_FILE_SIZE_MB: int = 200  # Maximum file size in MB
     MAX_PAGES: int = 500  # Maximum pages per PDF
     ALLOWED_EXTENSIONS: set[str] = {".pdf"}
 

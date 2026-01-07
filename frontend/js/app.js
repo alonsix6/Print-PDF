@@ -17,7 +17,7 @@ const CONFIG = {
     POLL_INTERVAL: 1000,
 
     // Maximum file size in MB
-    MAX_FILE_SIZE_MB: 100,
+    MAX_FILE_SIZE_MB: 200,
 
     // Allowed file types
     ALLOWED_TYPES: ['application/pdf'],
